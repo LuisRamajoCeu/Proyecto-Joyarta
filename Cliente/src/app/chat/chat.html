@@ -1,0 +1,86 @@
+<div class="chat-container">
+  <div class="conversaciones-panel">
+    <h2>Mis Conversaciones</h2>
+    <div class="conversaciones-lista">
+      @if (conversaciones.length === 0) {
+        <p class="sin-conversaciones">No tienes conversaciones activas</p>
+      }
+      @for (conv of conversaciones; track conv.id) {
+        <app-conversacion-item
+          [conversacion]="conv"
+          [idUsuarioActual]="idUsuarioActual"
+          [seleccionada]="conversacionSeleccionada?.id === conv.id"
+          (alSeleccionar)="seleccionarConversacion($event)">
+        </app-conversacion-item>
+      }
+    </div>
+  </div>
+
+  <div class="chat-panel">
+    @if (conversacionSeleccionada) {
+      <div class="chat-header">
+        <h2>{{ getOtroUsuario(conversacionSeleccionada).nombre }}</h2>
+        @if (conversacionSeleccionada.producto) {
+          <div class="producto-header">
+            <p>Sobre: {{ conversacionSeleccionada.producto.nombre }} - {{ conversacionSeleccionada.producto.precio }}€</p>
+            <button (click)="agregarAlCarrito()" class="btn-chat-carrito">🛒 Añadir</button>
+          </div>
+        }
+      </div>
+
+      <div class="mensajes-container">
+        @if (mensajes.length === 0) {
+          <p class="sin-mensajes">No hay mensajes aún. ¡Inicia la conversación!</p>
+        }
+        @for (mensaje of mensajes; track mensaje.id) {
+          <app-mensaje 
+            [mensaje]="mensaje" 
+            [idUsuarioActual]="idUsuarioActual">
+          </app-mensaje>
+        }
+      </div>
+
+      <div class="mensaje-input">
+        <input 
+          type="text" 
+          [(ngModel)]="nuevoMensaje"
+          (keyup.enter)="enviarMensaje()"
+          placeholder="Escribe un mensaje..."
+          class="input-mensaje">
+        <button (click)="enviarMensaje()" class="btn-enviar">Enviar</button>
+      </div>
+    } @else {
+      <div class="sin-seleccion">
+        <p>Selecciona una conversación para ver los mensajes</p>
+      </div>
+    }
+  </div>
+
+  @if (mostrarToast) {
+    <div class="toast-aviso">
+      <div class="toast-icono">✅</div>
+      <div class="toast-text">
+        <strong>Añadido al carrito</strong>
+        <span>Revisa tu carrito para finalizar la compra</span>
+      </div>
+    </div>
+  }
+</div>
+
+@if (mostrarModalError) {
+<div class="modal-overlay" (click)="cerrarModalError()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">
+      <svg viewBox="0 0 52 52" class="crossmark">
+        <circle class="crossmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="crossmark-x" fill="none" d="M16 16 36 36 M36 16 16 36" />
+      </svg>
+    </div>
+    <h3 class="modal-titulo error">{{ mensajeModalError }}</h3>
+    <p class="modal-subtitulo">{{ submensajeModalError }}</p>
+    <div class="modal-acciones">
+      <button class="btn-modal-primario error" (click)="cerrarModalError()">Entendido</button>
+    </div>
+  </div>
+</div>
+}

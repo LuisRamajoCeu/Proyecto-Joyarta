@@ -1,0 +1,228 @@
+.contenedor-catalogo {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 32px;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  font-family: 'Playfair Display', serif;
+  animation: fadeInUp 0.6s ease;
+}
+
+h2::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #d35400, #e67e22);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.filtros-container {
+  background: white;
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filtro-campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtro-campo label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filtro-campo input,
+.filtro-campo select {
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.filtro-campo input:focus,
+.filtro-campo select:focus {
+  outline: none;
+  border-color: #d35400;
+  box-shadow: 0 0 0 3px rgba(211, 84, 0, 0.08);
+  background: white;
+}
+
+.filtros-botones {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.btn-buscar,
+.btn-limpiar {
+  padding: 0.6rem 1.75rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-buscar {
+  background: linear-gradient(135deg, #d35400, #e67e22);
+  color: white;
+}
+
+.btn-buscar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(211, 84, 0, 0.25);
+}
+
+.btn-limpiar {
+  background: transparent;
+  color: #888;
+  border: 1.5px solid #ddd;
+}
+
+.btn-limpiar:hover {
+  border-color: #999;
+  color: #555;
+  transform: translateY(-1px);
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  justify-content: center;
+}
+
+p {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #999;
+}
+
+.mensaje-vacio {
+  text-align: center;
+  color: #999;
+  font-size: 1rem;
+  padding: 3rem 2rem;
+  grid-column: 1 / -1;
+  animation: fadeIn 0.5s ease;
+}
+
+.resultados-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 40px;
+  padding-bottom: 10px;
+  animation: fadeInUp 0.3s ease;
+}
+
+.btn-pag {
+  padding: 8px 18px;
+  background: white;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-pag:hover:not(:disabled) {
+  border-color: #d35400;
+  color: #d35400;
+  transform: translateY(-1px);
+}
+
+.btn-pag:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-pag-num {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-pag-num:hover {
+  border-color: #d35400;
+  color: #d35400;
+}
+
+.btn-pag-num.activa {
+  background: linear-gradient(135deg, #d35400, #e67e22);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(211, 84, 0, 0.25);
+}
+
+@media (max-width: 1000px) {
+  .grid-productos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-productos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .grid-productos {
+    grid-template-columns: 1fr;
+  }
+}

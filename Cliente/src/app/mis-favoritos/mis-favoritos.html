@@ -1,0 +1,20 @@
+<div class="contenedor-favoritos">
+  <h2>Mis Favoritos ❤️</h2>
+
+  @if (cargando) {
+    <p class="cargando">Cargando favoritos...</p>
+  } @else {
+    @if (favoritos.length > 0) {
+      <div class="grid-favoritos">
+        @for (favorito of favoritos; track favorito.id) {
+          <app-producto [producto]="favorito.producto"></app-producto>
+        }
+      </div>
+    } @else {
+      <div class="mensaje-vacio">
+        <p>No tienes productos favoritos aún.</p>
+        <a routerLink="/catalogo" class="btn-catalogo">Explorar Catálogo</a>
+      </div>
+    }
+  }
+</div>

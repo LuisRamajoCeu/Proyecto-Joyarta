@@ -1,0 +1,60 @@
+<div class="contenedor-detalle">
+  
+  @if (producto$ | async; as producto) {
+    
+    <div class="grid-detalle">
+      <div class="imagen-grande">
+        <img [src]="producto.imagenUrl || 'assets/no-image.png'" [alt]="producto.nombre">
+      </div>
+
+      <div class="info-producto">
+        <h1>{{ producto.nombre }}</h1>
+        <span class="categoria-badge">{{ producto.categoria.nombre || 'Joya' }}</span>
+        
+        <div class="precio-favorito">
+          <p class="precio-grande">{{ producto.precio | number:'1.2-2' }} €</p>
+          <button class="btn-favorito-detalle" (click)="toggleFavorito()" [class.activo]="esFavorito">
+            {{ esFavorito ? '❤️' : '🤍' }}
+          </button>
+        </div>
+
+        <div class="descripcion">
+          <h3>Descripción</h3>
+          <p>{{ producto.descripcion }}</p>
+        </div>
+
+        <div class="vendedor-info">
+          <p>Artesano: <strong>{{ producto.usuario.perfil?.nombre || 'Anónimo' }}</strong></p>
+        </div>
+        <button (click)="contactarVendedor()" class="btn-chat">
+          💬 Hablar con el Vendedor
+        </button>
+        <button (click)="agregarAlCarrito()" class="btn-carrito" [class.added]="btnCarritoAdded">
+          {{ btnCarritoAdded ? '✅ ¡Añadido!' : '🛒 Añadir al Carrito' }}
+        </button>
+      </div>
+    </div>
+
+  } @else {
+    <div class="loading">
+      <p>Cargando detalles del producto...</p>
+    </div>
+  }
+</div>
+@if (mostrarModalError) {
+<div class="modal-overlay" (click)="cerrarModalError()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">
+      <svg viewBox="0 0 52 52" class="crossmark">
+        <circle class="crossmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="crossmark-x" fill="none" d="M16 16 36 36 M36 16 16 36" />
+      </svg>
+    </div>
+    <h3 class="modal-titulo error">{{ mensajeModalError }}</h3>
+    <p class="modal-subtitulo">{{ submensajeModalError }}</p>
+    <div class="modal-acciones">
+      <button class="btn-modal-primario error" (click)="cerrarModalError()">Entendido</button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,45 @@
+.conversacion-item {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.conversacion-item:hover {
+  background: #f8f9fa;
+}
+
+.conversacion-item.activa {
+  background: #fef5ee;
+  border-left: 3px solid #d35400;
+}
+
+.conversacion-info h3 {
+  margin: 0 0 3px 0;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.conversacion-info .email {
+  margin: 0 0 4px 0;
+  font-size: 0.78rem;
+  color: #999;
+}
+
+.conversacion-info .producto {
+  margin: 4px 0 0 0;
+  font-size: 0.75rem;
+  color: #d35400;
+  font-weight: 500;
+}
+
+.conversacion-fecha {
+  font-size: 0.7rem;
+  color: #bbb;
+  white-space: nowrap;
+  margin-left: 10px;
+}

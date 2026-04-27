@@ -1,0 +1,56 @@
+.mensaje {
+  background-color: #f0f0f0;
+  padding: 10px 14px;
+  border-radius: 14px 14px 14px 4px;
+  max-width: 70%;
+  align-self: flex-start;
+  animation: slideInBottom 0.25s ease;
+  position: relative;
+}
+
+.mensaje.mio {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  color: white;
+  align-self: flex-end;
+  margin-left: auto;
+  border-radius: 14px 14px 4px 14px;
+}
+
+.mensaje-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #999;
+  margin-bottom: 4px;
+  gap: 10px;
+}
+
+.mensaje.mio .mensaje-header {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.autor {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.mensaje.mio .autor {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.mensaje-contenido {
+  word-wrap: break-word;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@keyframes slideInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

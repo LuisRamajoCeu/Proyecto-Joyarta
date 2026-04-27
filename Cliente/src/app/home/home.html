@@ -1,0 +1,24 @@
+<div class="hero-section">
+  <h1>Artesanía Única a un Clic</h1>
+  <p>Encuentra joyas exclusivas o diseña la tuya propia.</p>
+  <button routerLink="/catalogo" class="btn-catalogo">Ver Todo el Catálogo</button>
+</div>
+
+<h2>Últimas Novedades</h2>
+
+<div class="grid-novedades">
+  
+  @if (novedades$ | async; as lista) {
+    @for (producto of lista; track producto.id) {
+      <app-producto [producto]="producto"></app-producto>
+    } @empty {
+      <div class="mensaje-vacio">
+        <p>No hay novedades recientes.</p>
+      </div>
+    }
+
+  } @else {
+    <p class="cargando">Cargando novedades...</p>
+  }
+
+</div>

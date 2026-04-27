@@ -1,0 +1,69 @@
+<nav class="navbar" [class.scrolled]="navScrolled">
+
+  <div class="brand-container" routerLink="/home">
+    <img src="joyarta.png" alt="Logo" class="logo-img">
+  </div>
+  <ul class="nav-links">
+    <li><a routerLink="/home" routerLinkActive="active-link">Inicio</a></li>
+    <li><a routerLink="/catalogo" routerLinkActive="active-link">Catálogo</a></li>
+    <li><a routerLink="/favoritos" routerLinkActive="active-link">Favoritos</a></li>
+    <li><a routerLink="/chat" routerLinkActive="active-link">Chats</a></li>
+    <li>
+      <a routerLink="/carrito" routerLinkActive="active-link" class="cart-link">
+        Carrito
+        @if (carritoService.itemCount() > 0) {
+        <span class="badgem-cart">{{ carritoService.itemCount() }}</span>
+        }
+      </a>
+    </li>
+    @if (usuarioService.estaLogueado()) {
+    <li><a routerLink="/perfil" routerLinkActive="active-link">Mi Perfil</a></li>
+    <li><button (click)="logout()" class="btn-logout">Cerrar Sesión</button></li>
+    } @else {
+    <li><a routerLink="/login" class="btn-login">Acceder</a></li>
+    }
+  </ul>
+</nav>
+
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section footer-brand">
+      <h3>Joyarta</h3>
+      <p>Artesanía exclusiva hecha a mano. Cada pieza cuenta una historia única, creada con pasión por artesanos
+        locales.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a routerLink="/home">Inicio</a></li>
+        <li><a routerLink="/catalogo">Catálogo</a></li>
+        <li><a routerLink="/favoritos">Favoritos</a></li>
+        <li><a routerLink="/carrito">Carrito</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Mi Cuenta</h4>
+      <ul>
+        <li><a routerLink="/perfil">Mi Perfil</a></li>
+        <li><a routerLink="/chat">Mis Chats</a></li>
+        <li><a routerLink="/login">Iniciar Sesión</a></li>
+        <li><a routerLink="/registro">Registrarse</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Contacto</h4>
+      <ul>
+        <li>📧 info&#64;joyarta.com</li>
+        <li>📞 +34 612 345 678</li>
+        <li>📍 Sevilla, España</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Joyarta - Artesanía Exclusiva. Todos los derechos reservados.</p>
+  </div>
+</footer>

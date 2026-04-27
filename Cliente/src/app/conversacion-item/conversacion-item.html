@@ -1,0 +1,15 @@
+<div 
+  class="conversacion-item" 
+  [class.activa]="seleccionada"
+  (click)="seleccionar()">
+  <div class="conversacion-info">
+    <h3>{{ otroUsuario.nombre }}</h3>
+    <p class="email">{{ otroUsuario.email }}</p>
+    @if (conversacion.producto) {
+      <p class="producto">📦 {{ conversacion.producto.nombre }}</p>
+    }
+  </div>
+  <div class="conversacion-fecha">
+    {{ conversacion.fechaCreacion }}
+  </div>
+</div>

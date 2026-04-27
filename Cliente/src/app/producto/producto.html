@@ -1,0 +1,15 @@
+<div class="card" [routerLink]="['/productos', producto.id]">
+  <button class="btn-favorito" (click)="toggleFavorito($event)" [class.activo]="esFavorito">
+    {{ esFavorito ? '❤️' : '🤍' }}
+  </button>
+  
+  <div class="img-container">
+    <img [src]="producto.imagenUrl" [alt]="producto.nombre" 
+         onerror="this.src='assets/no-image.png'"> </div>
+
+  <div class="card-body">
+    <h3>{{ producto.nombre }}</h3>
+    <p class="precio">{{ producto.precio | number:'1.2-2' }} €</p>
+    <span class="ver-mas">Ver detalles &rarr;</span>
+  </div>
+</div>

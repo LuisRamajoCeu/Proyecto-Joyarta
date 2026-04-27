@@ -1,0 +1,158 @@
+<div class="perfil-container" *ngIf="usuario">
+  <div class="header-perfil">
+    <div class="avatar-container">
+      <img [src]="perfil?.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" class="avatar">
+    </div>
+    <div class="info-usuario">
+      <h2>{{ perfil?.nombre || usuario.nombre }}</h2>
+      <p class="email">{{ usuario.email }}</p>
+      <span class="rol-badge">{{ usuario.rol || 'CLIENTE' }}</span>
+      <p class="biografia">{{ perfil?.biografia || 'Sin descripción' }}</p>
+      <p class="direccion" *ngIf="perfil?.direccion">📍 {{ perfil.direccion }}</p>
+    </div>
+  </div>
+
+  <div class="tabs-container">
+    <button class="tab-btn" [class.active]="activeTab === 'productos'" (click)="onTabChange('productos')">Mis Productos</button>
+    <button class="tab-btn" [class.active]="activeTab === 'pedidos'" (click)="onTabChange('pedidos')">Mis Pedidos</button>
+    <button class="tab-btn" [class.active]="activeTab === 'editar'" (click)="onTabChange('editar')">Editar Perfil</button>
+    <button class="tab-btn" [class.active]="activeTab === 'seguridad'" (click)="onTabChange('seguridad')">Seguridad</button>
+  </div>
+
+  <div class="content-area">
+
+    
+    <div *ngIf="activeTab === 'productos'" class="productos-grid">
+      <div *ngIf="productos.length === 0" class="empty-state">No has subido productos aún.</div>
+      <div class="producto-card" *ngFor="let prod of productos">
+        <img [src]="prod.imagenUrl || 'assets/placeholder.png'" alt="{{ prod.nombre }}">
+        <div class="card-info">
+          <h3>{{ prod.nombre }}</h3>
+          <p class="price">{{ prod.precio }}€</p>
+          <p class="stock">Stock: {{ prod.stock }}</p>
+        </div>
+      </div>
+    </div>
+
+    
+    <div *ngIf="activeTab === 'pedidos'" class="pedidos-list">
+      <div *ngIf="pedidos.length === 0" class="empty-state">No has realizado pedidos aún.</div>
+      <div class="pedido-item" *ngFor="let pedido of pedidos">
+        <div class="pedido-header">
+          <span class="pedido-id">Pedido #{{ pedido.id }}</span>
+          <span class="pedido-fecha">{{ pedido.fecha | date:'dd/MM/yyyy' }}</span>
+          <span class="pedido-status" [class]="pedido.estadoPago?.toLowerCase()">{{ pedido.estadoPago }}</span>
+        </div>
+        <div class="pedido-total">
+          Total: {{ pedido.total | number:'1.2-2' }}€
+        </div>
+        <div class="pedido-detalles">
+           <div *ngFor="let detalle of pedido.listaDetallePedidos" class="detalle-row">
+             <span>{{ detalle.producto.nombre }} (x{{ detalle.cantidad }})</span>
+             <span>{{ detalle.precioUnitario * detalle.cantidad | number:'1.2-2' }}€</span>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div *ngIf="activeTab === 'editar'" class="editar-perfil">
+      
+      @if (mensajeExito) {
+        <div class="msg-exito">
+          <span>✅</span> {{ mensajeExito }}
+        </div>
+      }
+      @if (mensajeError) {
+        <div class="msg-error">
+          <span>❌</span> {{ mensajeError }}
+        </div>
+      }
+
+      <form (ngSubmit)="guardarPerfil()" class="edit-form">
+        <div class="form-group">
+          <label for="editNombre">Nombre</label>
+          <input type="text" id="editNombre" [(ngModel)]="editNombre" name="editNombre" placeholder="Tu nombre completo">
+        </div>
+
+        <div class="form-group">
+          <label for="editBiografia">Biografía</label>
+          <textarea id="editBiografia" [(ngModel)]="editBiografia" name="editBiografia" rows="3" placeholder="Cuéntanos sobre ti..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editDireccion">Dirección</label>
+          <input type="text" id="editDireccion" [(ngModel)]="editDireccion" name="editDireccion" placeholder="Tu dirección">
+        </div>
+
+        <div class="form-group">
+          <label for="editAvatarUrl">URL de Avatar</label>
+          <input type="url" id="editAvatarUrl" [(ngModel)]="editAvatarUrl" name="editAvatarUrl" placeholder="https://ejemplo.com/tu-foto.jpg">
+        </div>
+
+        @if (editAvatarUrl) {
+          <div class="avatar-preview">
+            <p>Vista previa:</p>
+            <img [src]="editAvatarUrl" alt="Preview" onerror="this.style.display='none'">
+          </div>
+        }
+
+        <button type="submit" class="btn-guardar" [disabled]="guardando">
+          @if (guardando) {
+            <span class="spinner"></span> Guardando...
+          } @else {
+            Guardar Cambios
+          }
+        </button>
+      </form>
+    </div>
+
+    
+    <div *ngIf="activeTab === 'seguridad'" class="editar-perfil">
+      <div class="seguridad-header">
+        <h3>🔒 Cambiar Contraseña</h3>
+        <p>Introduce tu contraseña actual y elige una nueva.</p>
+      </div>
+
+      @if (mensajeExitoPass) {
+        <div class="msg-exito">
+          <span>✅</span> {{ mensajeExitoPass }}
+        </div>
+      }
+      @if (mensajeErrorPass) {
+        <div class="msg-error">
+          <span>❌</span> {{ mensajeErrorPass }}
+        </div>
+      }
+
+      <form (ngSubmit)="cambiarPassword()" class="edit-form">
+        <div class="form-group">
+          <label for="passActual">Contraseña Actual</label>
+          <input type="password" id="passActual" [(ngModel)]="passActual" name="passActual" placeholder="Tu contraseña actual">
+        </div>
+
+        <div class="form-group">
+          <label for="passNueva">Nueva Contraseña</label>
+          <input type="password" id="passNueva" [(ngModel)]="passNueva" name="passNueva" placeholder="Mínimo 6 caracteres" minlength="6">
+        </div>
+
+        <div class="form-group">
+          <label for="passConfirmar">Confirmar Nueva Contraseña</label>
+          <input type="password" id="passConfirmar" [(ngModel)]="passConfirmar" name="passConfirmar" placeholder="Repite la nueva contraseña">
+          @if (passNueva && passConfirmar && passNueva !== passConfirmar) {
+            <small class="field-error">Las contraseñas no coinciden</small>
+          }
+        </div>
+
+        <button type="submit" class="btn-guardar" [disabled]="guardandoPass || !passActual || !passNueva || !passConfirmar || passNueva !== passConfirmar">
+          @if (guardandoPass) {
+            <span class="spinner"></span> Cambiando...
+          } @else {
+            Cambiar Contraseña
+          }
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

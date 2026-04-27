@@ -1,0 +1,9 @@
+<div class="mensaje" [class.mio]="esMio">
+  <div class="mensaje-header">
+    <span class="autor">{{ mensaje.usuario.nombre }}</span>
+    <span class="fecha">{{ mensaje.fechaEnvio | date:'short' }}</span>
+  </div>
+  <div class="mensaje-contenido">
+    {{ mensaje.contenido }}
+  </div>
+</div>

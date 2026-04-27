@@ -1,0 +1,35 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { ProductoModel } from '../models/productoModel';
+import { Categoria } from '../models/productoModel';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TiendaService {
+  private apiUrl = 'http://localhost:8080/api/tienda';
+  constructor(private http: HttpClient) { }
+  getProductos(): Observable<ProductoModel[]> {
+    return this.http.get<ProductoModel[]>(`${this.apiUrl}/productos`);
+  }
+  getNovedades(): Observable<ProductoModel[]> {
+    return this.http.get<ProductoModel[]>(`${this.apiUrl}/productos`);
+  }
+  getProductoById(id: number): Observable<ProductoModel> {
+    return this.http.get<ProductoModel>(`${this.apiUrl}/productos/${id}`);
+  }
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.apiUrl}/categorias`);
+  }
+  
+  buscarProductos(nombre?: string, categoria?: string, precioMin?: number, precioMax?: number): Observable<ProductoModel[]> {
+    let params = new HttpParams();
+    if (nombre) params = params.set('nombre', nombre);
+    if (categoria) params = params.set('categoria', categoria);
+    if (precioMin !== undefined && precioMin !== null) params = params.set('precioMin', precioMin.toString());
+    if (precioMax !== undefined && precioMax !== null) params = params.set('precioMax', precioMax.toString());
+    
+    return this.http.get<ProductoModel[]>(`${this.apiUrl}/productos`, { params });
+  }
+}

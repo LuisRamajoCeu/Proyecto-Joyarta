@@ -1,0 +1,163 @@
+<div class="carrito-page">
+  <div class="carrito-header">
+    <h2>🛒 Mi Carrito</h2>
+  </div>
+
+  <ng-container *ngIf="items$ | async as items">
+    @if (items.length === 0 && !mostrarModal) {
+    <div class="carrito-vacio">
+      <div class="vacio-ilustracion">
+        <div class="bolsa-vacia">
+          <span class="bolsa-icono">🛍️</span>
+        </div>
+      </div>
+      <h3>Tu carrito está vacío</h3>
+      <p>Explora nuestro catálogo y encuentra piezas únicas de joyería artesanal</p>
+      <button class="btn-explorar" (click)="router.navigate(['/catalogo'])">
+        Explorar Catálogo
+        <span class="flecha">→</span>
+      </button>
+    </div>
+    } @else if (items.length > 0) {
+    <div class="carrito-layout">
+      <div class="carrito-productos">
+        <div class="productos-header">
+          <span>Producto</span>
+          <span>Cantidad</span>
+          <span>Subtotal</span>
+          <span></span>
+        </div>
+        @for (item of items; track item.producto.id; let i = $index) {
+        <div class="item-carrito" [style.animation-delay]="(i * 0.08) + 's'">
+          <div class="item-info">
+            <img [src]="item.producto.imagenUrl || 'assets/placeholder.png'" alt="{{ item.producto.nombre }}"
+              class="item-img">
+            <div class="item-detalle">
+              <h4>{{ item.producto.nombre }}</h4>
+              <p class="item-precio-unitario">{{ item.producto.precio | number:'1.2-2' }}€ / ud.</p>
+              @if (item.producto.categoria) {
+              <span class="item-categoria">{{ item.producto.categoria.nombre }}</span>
+              }
+            </div>
+          </div>
+          <div class="item-cantidad">
+            <div class="controles-cantidad-premium">
+              <button class="btn-qty" (click)="actualizarCantidad(item.producto.id!, item.cantidad - 1)"
+                [disabled]="item.cantidad <= 1">−</button>
+              <span class="qty-display">{{ item.cantidad }}</span>
+              <button class="btn-qty" (click)="actualizarCantidad(item.producto.id!, item.cantidad + 1)">+</button>
+            </div>
+          </div>
+          <div class="item-subtotal">
+            <span>{{ (item.producto.precio * item.cantidad) | number:'1.2-2' }}€</span>
+          </div>
+          <div class="item-acciones">
+            <button class="btn-eliminar-premium" (click)="eliminar(item.producto.id!)" title="Eliminar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="carrito-resumen">
+        <div class="resumen-card">
+          <h3>Resumen del pedido</h3>
+
+          <div class="resumen-lineas">
+            <div class="resumen-linea">
+              <span>Subtotal ({{ items.length }} artículo{{ items.length > 1 ? 's' : '' }})</span>
+              <span>{{ calcularTotal(items) | number:'1.2-2' }}€</span>
+            </div>
+            <div class="resumen-linea">
+              <span>Envío</span>
+              <span class="envio-gratis">Gratis</span>
+            </div>
+          </div>
+
+          <div class="resumen-total">
+            <span>Total</span>
+            <span class="total-precio">{{ calcularTotal(items) | number:'1.2-2' }}€</span>
+          </div>
+
+          <button class="btn-pagar" (click)="finalizarPedido()" [disabled]="procesando">
+            @if (procesando) {
+            <span class="spinner"></span>
+            <span>Procesando...</span>
+            } @else {
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+            <span>Realizar Pedido</span>
+            }
+          </button>
+
+          <div class="resumen-seguridad">
+            <span>🔒</span>
+            <p>Pago 100% seguro y protegido</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </ng-container>
+</div>
+
+@if (mostrarModal) {
+<div class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    @if (pedidoExito) {
+    <div class="modal-icon exito">
+      <svg viewBox="0 0 52 52" class="checkmark">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+      </svg>
+    </div>
+    <h3 class="modal-titulo exito">{{ mensajeModal }}</h3>
+    <p class="modal-subtitulo">{{ submensajeModal }}</p>
+
+    <div class="pedido-detalles">
+      <div class="detalle-item">
+        <span class="detalle-label">Nº Pedido</span>
+        <span class="detalle-valor">#{{ numeroPedido }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-label">Productos</span>
+        <span class="detalle-valor">{{ cantidadProductos }} artículo{{ cantidadProductos > 1 ? 's' : '' }}</span>
+      </div>
+      <div class="detalle-item total">
+        <span class="detalle-label">Total pagado</span>
+        <span class="detalle-valor">{{ totalPedido | number:'1.2-2' }}€</span>
+      </div>
+    </div>
+
+    <div class="modal-acciones">
+      <button class="btn-modal-primario" (click)="cerrarModal()">Volver al inicio</button>
+      <button class="btn-modal-secundario" (click)="irACatalogo()">Seguir comprando</button>
+    </div>
+    }
+
+    @if (pedidoError) {
+    <div class="modal-icon error">
+      <svg viewBox="0 0 52 52" class="crossmark">
+        <circle class="crossmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="crossmark-x" fill="none" d="M16 16 36 36 M36 16 16 36" />
+      </svg>
+    </div>
+    <h3 class="modal-titulo error">{{ mensajeModal }}</h3>
+    <p class="modal-subtitulo">{{ submensajeModal }}</p>
+
+    <div class="modal-acciones">
+      <button class="btn-modal-primario error" (click)="cerrarModal()">Entendido</button>
+    </div>
+    }
+
+  </div>
+</div>
+}
