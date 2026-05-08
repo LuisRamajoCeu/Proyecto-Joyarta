@@ -29,7 +29,7 @@ public class Producto {
 	private Double precio;
 	@Column
 	private Integer stock;
-	@Column
+	@Column(columnDefinition = "LONGTEXT")
 	private String imagenUrl;
 	
 	@ManyToOne

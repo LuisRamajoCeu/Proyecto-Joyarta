@@ -5,7 +5,7 @@ title Joyarta - Iniciando proyecto...
 :: ============================================================
 ::  CONFIGURACION - Modifica estas rutas si cambian
 :: ============================================================
-set "JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.18.8-hotspot"
+set "JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.19.10-hotspot"
 set "MARIADB_BIN=C:\Program Files\MariaDB 12.2\bin"
 set "NODE_DIR=C:\Program Files\nodejs"
 set "PROJECT_DIR=%~dp0"

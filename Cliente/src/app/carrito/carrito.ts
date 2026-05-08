@@ -79,6 +79,7 @@ export class Carrito implements OnInit {
       this.carritoService.clearCart();
     } catch (error: any) {
       console.error('Error al realizar pedido:', error);
+      console.error('Respuesta del servidor:', error?.error);
       this.pedidoExito = false;
       this.pedidoError = true;
       if (error && error.message === "Compra de producto propio no permitida") {
@@ -86,7 +87,14 @@ export class Carrito implements OnInit {
         this.submensajeModal = 'No puedes adquirir tus propios productos como artesano.';
       } else {
         this.mensajeModal = 'Error al procesar el pedido';
-        this.submensajeModal = 'Ha ocurrido un problema al procesar tu pedido. Por favor, inténtalo de nuevo.';
+        const serverMsg = error?.error;
+        if (Array.isArray(serverMsg)) {
+          this.submensajeModal = serverMsg.join(', ');
+        } else if (typeof serverMsg === 'string') {
+          this.submensajeModal = serverMsg;
+        } else {
+          this.submensajeModal = 'Ha ocurrido un problema. Prueba a vaciar el carrito y añadir los productos de nuevo.';
+        }
       }
       this.mostrarModal = true;
     } finally {

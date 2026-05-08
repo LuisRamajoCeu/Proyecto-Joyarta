@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.joyarta.model.Categoria;
 import com.example.joyarta.model.Producto;
+import com.example.joyarta.model.Usuario;
+import com.example.joyarta.repository.CategoriaRepository;
 import com.example.joyarta.repository.ProductoRepository;
+import com.example.joyarta.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -16,9 +20,21 @@ public class ProductoServiceImpl implements ProductoService{
 
 	@Autowired
 	private ProductoRepository prodRepo;
+	@Autowired
+	private UsuarioRepository usuarioRepo;
+	@Autowired
+	private CategoriaRepository catRepo;
 	
 	@Override
 	public Producto crearProducto(Producto producto) {
+		if (producto.getUsuario() != null && producto.getUsuario().getId() != null) {
+			Usuario usuario = usuarioRepo.findById(producto.getUsuario().getId()).orElse(null);
+			producto.setUsuario(usuario);
+		}
+		if (producto.getCategoria() != null && producto.getCategoria().getId() != null) {
+			Categoria categoria = catRepo.findById(producto.getCategoria().getId()).orElse(null);
+			producto.setCategoria(categoria);
+		}
 		return prodRepo.save(producto);
 	}
 	

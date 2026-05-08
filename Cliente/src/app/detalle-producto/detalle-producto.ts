@@ -126,4 +126,9 @@ export class DetalleProducto implements OnInit {
         console.error('Error al obtener producto para carrito:', error);
     }
   }
+
+  esProductoPropio(producto: ProductoModel): boolean {
+    const usuario = this.usuarioService.getUsuario();
+    return !!(usuario && producto.usuario && usuario.id === producto.usuario.id);
+  }
 }

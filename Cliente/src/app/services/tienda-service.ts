@@ -23,6 +23,10 @@ export class TiendaService {
     return this.http.get<Categoria[]>(`${this.apiUrl}/categorias`);
   }
   
+  crearProducto(producto: any): Observable<ProductoModel> {
+    return this.http.post<ProductoModel>(`${this.apiUrl}/productos`, producto);
+  }
+
   buscarProductos(nombre?: string, categoria?: string, precioMin?: number, precioMax?: number): Observable<ProductoModel[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);

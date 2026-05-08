@@ -65,55 +65,82 @@ public class PedidoController {
         return ResponseEntity.ok(actualizado);
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping
-    public ResponseEntity<?> crearPedido(@RequestBody Pedido pedido) {
-        Usuario usuario = usuarioService.getById(pedido.getUsuario().getId());
-        if (usuario == null) {
-            return ResponseEntity.badRequest().body("Usuario no encontrado");
-        }
-
-        pedido.setUsuario(usuario);
-        pedido.setFecha(LocalDate.now());
-        pedido.setEstadoPago("PENDIENTE");
-
-        List<String> errores = new ArrayList<>();
-        double total = 0.0;
-        
-        if (pedido.getListaDetallePedidos() != null) {
-            for (DetallePedido detalle : pedido.getListaDetallePedidos()) {
-                Producto producto = productoService.getById(detalle.getProducto().getId());
-                
-                if (producto == null) {
-                    errores.add("Producto no encontrado ID: " + detalle.getProducto().getId());
-                    continue;
-                }
-
-                if (detalle.getCantidad() == null || detalle.getCantidad() <= 0) {
-                	detalle.setCantidad(1);
-                }
-
-                if (producto.getStock() < detalle.getCantidad()) {
-                    errores.add("Stock insuficiente para: " + producto.getNombre());
-                    continue;
-                }
-
-                producto.setStock(producto.getStock() - detalle.getCantidad());
-                productoService.crearProducto(producto);
-
-                detalle.setProducto(producto);
-                detalle.setPrecioUnitario(producto.getPrecio());
-                detalle.setPedido(pedido);
-                
-                total += producto.getPrecio() * detalle.getCantidad();
+    public ResponseEntity<?> crearPedido(@RequestBody Map<String, Object> datos) {
+        try {
+            Map<String, Object> usuarioMap = (Map<String, Object>) datos.get("usuario");
+            if (usuarioMap == null || usuarioMap.get("id") == null) {
+                return ResponseEntity.badRequest().body("Usuario no proporcionado");
             }
-        }
+            Long usuarioId = Long.valueOf(usuarioMap.get("id").toString());
+            Usuario usuario = usuarioService.getById(usuarioId);
+            if (usuario == null) {
+                return ResponseEntity.badRequest().body("Usuario no encontrado");
+            }
 
-        if (!errores.isEmpty()) {
-            return ResponseEntity.badRequest().body(errores);
-        }
+            Pedido pedido = new Pedido();
+            pedido.setUsuario(usuario);
+            pedido.setFecha(LocalDate.now());
+            pedido.setEstadoPago("PENDIENTE");
 
-        pedido.setTotal(total);
-        Pedido savedPedido = pedidoService.crearPedido(pedido);
-        return ResponseEntity.ok(savedPedido);
+            List<Map<String, Object>> detallesRaw = (List<Map<String, Object>>) datos.get("listaDetallePedidos");
+            List<String> errores = new ArrayList<>();
+            double total = 0.0;
+            java.util.Set<DetallePedido> detalles = new java.util.HashSet<>();
+
+            if (detallesRaw != null) {
+                for (Map<String, Object> detalleMap : detallesRaw) {
+                    Map<String, Object> productoMap = (Map<String, Object>) detalleMap.get("producto");
+                    if (productoMap == null || productoMap.get("id") == null) {
+                        errores.add("Detalle sin producto válido");
+                        continue;
+                    }
+
+                    Long productoId = Long.valueOf(productoMap.get("id").toString());
+                    Producto producto = productoService.getById(productoId);
+
+                    if (producto == null) {
+                        errores.add("Producto no encontrado ID: " + productoId);
+                        continue;
+                    }
+
+                    Integer cantidad = 1;
+                    if (detalleMap.get("cantidad") != null) {
+                        cantidad = Integer.valueOf(detalleMap.get("cantidad").toString());
+                    }
+                    if (cantidad <= 0) cantidad = 1;
+
+                    if (producto.getStock() < cantidad) {
+                        errores.add("Stock insuficiente para: " + producto.getNombre());
+                        continue;
+                    }
+
+                    producto.setStock(producto.getStock() - cantidad);
+                    productoService.update(producto.getId(), producto);
+
+                    DetallePedido detalle = new DetallePedido();
+                    detalle.setProducto(producto);
+                    detalle.setCantidad(cantidad);
+                    detalle.setPrecioUnitario(producto.getPrecio());
+                    detalle.setPedido(pedido);
+                    detalles.add(detalle);
+
+                    total += producto.getPrecio() * cantidad;
+                }
+            }
+
+            if (!errores.isEmpty()) {
+                return ResponseEntity.badRequest().body(errores);
+            }
+
+            pedido.setListaDetallePedidos(detalles);
+            pedido.setTotal(total);
+            Pedido savedPedido = pedidoService.crearPedido(pedido);
+            return ResponseEntity.ok(savedPedido);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error al procesar pedido: " + e.getMessage());
+        }
     }
 }

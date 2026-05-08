@@ -26,12 +26,18 @@
         <div class="vendedor-info">
           <p>Artesano: <strong>{{ producto.usuario.perfil?.nombre || 'Anónimo' }}</strong></p>
         </div>
-        <button (click)="contactarVendedor()" class="btn-chat">
-          💬 Hablar con el Vendedor
-        </button>
-        <button (click)="agregarAlCarrito()" class="btn-carrito" [class.added]="btnCarritoAdded">
-          {{ btnCarritoAdded ? '✅ ¡Añadido!' : '🛒 Añadir al Carrito' }}
-        </button>
+        @if (esProductoPropio(producto)) {
+          <div class="producto-propio-badge">
+            <span>✨</span> Este producto es tuyo
+          </div>
+        } @else {
+          <button (click)="contactarVendedor()" class="btn-chat">
+            💬 Hablar con el Vendedor
+          </button>
+          <button (click)="agregarAlCarrito()" class="btn-carrito" [class.added]="btnCarritoAdded">
+            {{ btnCarritoAdded ? '✅ ¡Añadido!' : '🛒 Añadir al Carrito' }}
+          </button>
+        }
       </div>
     </div>
 

@@ -2,15 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../services/usuario-service';
-import { ProductoModel } from '../models/productoModel';
+import { TiendaService } from '../services/tienda-service';
+import { ProductoModel, Categoria } from '../models/productoModel';
 import { Perfil } from '../models/usuarioModel';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css'
 })
@@ -36,7 +37,26 @@ export class PerfilComponent implements OnInit {
   mensajeExitoPass = '';
   mensajeErrorPass = '';
 
-  constructor(private usuarioService: UsuarioService, private router: Router) {}
+  // ---- Subir Producto ----
+  mostrarModalProducto = false;
+  categorias: Categoria[] = [];
+  nuevoProducto = {
+    nombre: '',
+    descripcion: '',
+    precio: null as number | null,
+    stock: null as number | null,
+    imagenUrl: '',
+    categoriaId: null as number | null
+  };
+  guardandoProducto = false;
+  mensajeExitoProducto = '';
+  mensajeErrorProducto = '';
+
+  constructor(
+    private usuarioService: UsuarioService,
+    private tiendaService: TiendaService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
     this.usuario = this.usuarioService.getUsuario();
@@ -48,6 +68,7 @@ export class PerfilComponent implements OnInit {
     await this.loadPerfil();
     await this.loadProductos();
     await this.loadPedidos();
+    await this.loadCategorias();
   }
 
   async loadPerfil() {
@@ -79,6 +100,14 @@ export class PerfilComponent implements OnInit {
       this.pedidos = await lastValueFrom(this.usuarioService.getPedidosUsuario(this.usuario.id));
     } catch (err) {
       console.error('Error loading pedidos', err);
+    }
+  }
+
+  async loadCategorias() {
+    try {
+      this.categorias = await lastValueFrom(this.tiendaService.getCategorias());
+    } catch (err) {
+      console.error('Error loading categorias', err);
     }
   }
 
@@ -182,5 +211,72 @@ export class PerfilComponent implements OnInit {
 
   eliminarFoto() {
     this.editAvatarUrl = '';
+  }
+
+  // ---- Métodos para subir producto ----
+
+  abrirModalProducto() {
+    this.nuevoProducto = {
+      nombre: '',
+      descripcion: '',
+      precio: null,
+      stock: null,
+      imagenUrl: '',
+      categoriaId: null
+    };
+    this.mensajeExitoProducto = '';
+    this.mensajeErrorProducto = '';
+    this.mostrarModalProducto = true;
+  }
+
+  cerrarModalProducto() {
+    this.mostrarModalProducto = false;
+  }
+
+  onProductoImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.nuevoProducto.imagenUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async subirProducto() {
+    this.mensajeExitoProducto = '';
+    this.mensajeErrorProducto = '';
+
+    if (!this.nuevoProducto.nombre || !this.nuevoProducto.precio || !this.nuevoProducto.stock) {
+      this.mensajeErrorProducto = 'Rellena al menos el nombre, precio y stock.';
+      return;
+    }
+
+    this.guardandoProducto = true;
+
+    const productoPayload: any = {
+      nombre: this.nuevoProducto.nombre,
+      descripcion: this.nuevoProducto.descripcion,
+      precio: this.nuevoProducto.precio,
+      stock: this.nuevoProducto.stock,
+      imagenUrl: this.nuevoProducto.imagenUrl,
+      usuario: { id: this.usuario.id },
+      categoria: this.nuevoProducto.categoriaId ? { id: this.nuevoProducto.categoriaId } : null
+    };
+
+    try {
+      await lastValueFrom(this.tiendaService.crearProducto(productoPayload));
+      this.mensajeExitoProducto = '¡Producto subido correctamente!';
+      await this.loadProductos();
+      setTimeout(() => {
+        this.cerrarModalProducto();
+      }, 1500);
+    } catch (err) {
+      console.error('Error al subir producto', err);
+      this.mensajeErrorProducto = 'Error al subir el producto. Inténtalo de nuevo.';
+    } finally {
+      this.guardandoProducto = false;
+    }
   }
 }
