@@ -159,4 +159,28 @@ export class PerfilComponent implements OnInit {
       this.syncEditFields();
     }
   }
+
+  getInitials(nombre: string | undefined): string {
+    if (!nombre) return '?';
+    const words = nombre.trim().split(' ');
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return nombre.substring(0, 2).toUpperCase();
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.editAvatarUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  eliminarFoto() {
+    this.editAvatarUrl = '';
+  }
 }

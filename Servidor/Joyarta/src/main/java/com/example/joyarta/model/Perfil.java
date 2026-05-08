@@ -19,7 +19,7 @@ public class Perfil {
 	private String nombre;
 	@Column
 	private String biografia;
-	@Column
+	@Column(columnDefinition = "LONGTEXT")
 	private String avatarUrl;
 	@Column 
 	private String direccion;
