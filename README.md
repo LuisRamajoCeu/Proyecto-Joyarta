@@ -56,13 +56,13 @@
 - Seguimiento de pedidos con estados (`PENDIENTE`, etc.)
 - Historial de pedidos del usuario con detalles (producto, cantidad, precio unitario)
 
-### 💬 Chat / Mensajería
+### 💬 Chat
 - Sistema de conversaciones en tiempo real entre usuarios
 - Conversaciones vinculadas a productos específicos
 - Envío y recepción de mensajes con marca de tiempo
 - Listado de todas las conversaciones activas
 
-### 📝 Solicitudes y Propuestas Personalizadas
+### 📝 Solicitudes Personalizadas
 - Los clientes pueden crear solicitudes de piezas a medida (título, descripción, imagen de referencia, presupuesto estimado)
 - Los artesanos pueden enviar propuestas con presupuesto, tiempo estimado y mensaje
 - El cliente puede **aceptar** o **rechazar** cada propuesta
