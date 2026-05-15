@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { TiendaService } from '../services/tienda-service';
 import { ProductoModel, Categoria } from '../models/productoModel';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Producto } from '../producto/producto';
 import { FormsModule } from '@angular/forms';

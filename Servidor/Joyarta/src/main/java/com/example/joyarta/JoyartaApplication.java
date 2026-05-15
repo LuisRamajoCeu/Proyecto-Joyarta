@@ -22,25 +22,6 @@ import com.example.joyarta.repository.UsuarioRepository;
 public class JoyartaApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
-		try {
-			String url = "jdbc:mariadb://localhost:3306/";
-			try (java.sql.Connection conn = java.sql.DriverManager.getConnection(url + "jpa", "luis", "luis")) {
-			} catch (Exception e) {
-				System.out.println("No se pudo conectar como luis. Intentando crear usuario con root...");
-				try (java.sql.Connection rootConn = java.sql.DriverManager.getConnection(url, "root", "luis");
-					 java.sql.Statement stmt = rootConn.createStatement()) {
-					stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS jpa");
-					stmt.executeUpdate("CREATE USER IF NOT EXISTS 'luis'@'localhost' IDENTIFIED BY 'luis'");
-					stmt.executeUpdate("CREATE USER IF NOT EXISTS 'luis'@'%' IDENTIFIED BY 'luis'");
-					stmt.executeUpdate("GRANT ALL PRIVILEGES ON jpa.* TO 'luis'@'localhost'");
-					stmt.executeUpdate("GRANT ALL PRIVILEGES ON jpa.* TO 'luis'@'%'");
-					stmt.executeUpdate("FLUSH PRIVILEGES");
-					System.out.println("Usuario luis y base de datos jpa creados exitosamente.");
-				}
-			}
-		} catch (Exception ex) {
-			System.err.println("Fallo la inicializacion de la base de datos: " + ex.getMessage());
-		}
 		SpringApplication.run(JoyartaApplication.class, args);
 	}
 

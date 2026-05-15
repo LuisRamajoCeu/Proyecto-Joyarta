@@ -7,7 +7,7 @@
     @if (favoritos.length > 0) {
       <div class="grid-favoritos">
         @for (favorito of favoritos; track favorito.id) {
-          <app-producto [producto]="favorito.producto"></app-producto>
+          <app-producto [producto]="favorito.producto" (favoritoCambiado)="onFavoritoCambiado($event, favorito.id)"></app-producto>
         }
       </div>
     } @else {

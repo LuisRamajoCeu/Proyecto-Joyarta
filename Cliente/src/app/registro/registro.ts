@@ -16,6 +16,7 @@ export class Registro {
   nuevoUsuario: Usuario = {
     email: '',
     password: '',
+    rol: '',
     perfil: {
       nombre: '',
       biografia: '',
@@ -24,6 +25,7 @@ export class Registro {
     }
   };
 
+  rolSeleccionado = false;
   mostrarOpcionalesTxt = true;
   mostrarOpcionales = false;
   registrando = false;
@@ -31,6 +33,16 @@ export class Registro {
   errorMsg = '';
 
   constructor(private usuarioService: UsuarioService, private router: Router) {}
+
+  seleccionarRol(rol: string) {
+    this.nuevoUsuario.rol = rol;
+    this.rolSeleccionado = true;
+  }
+
+  volverSeleccionRol() {
+    this.rolSeleccionado = false;
+    this.nuevoUsuario.rol = '';
+  }
 
   toggleOpcionales() {
     this.mostrarOpcionales = !this.mostrarOpcionales;

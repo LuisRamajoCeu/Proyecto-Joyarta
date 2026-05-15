@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CarritoService, CartItem } from '../services/carrito-service';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { UsuarioService } from '../services/usuario-service';
   templateUrl: './carrito.html',
   styleUrl: './carrito.css'
 })
-export class Carrito implements OnInit {
+export class Carrito {
   items$: Observable<CartItem[]>;
 
   mostrarModal = false;
@@ -36,8 +36,7 @@ export class Carrito implements OnInit {
     return items.reduce((sum, item) => sum + (item.producto.precio * item.cantidad), 0);
   }
 
-  ngOnInit() {
-  }
+
 
   eliminar(id: number) {
     if (id !== undefined) {

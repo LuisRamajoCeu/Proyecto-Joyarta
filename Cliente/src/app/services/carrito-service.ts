@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ProductoModel } from '../models/productoModel';
 import { HttpClient } from '@angular/common/http';
 import { UsuarioService } from './usuario-service';
@@ -83,7 +83,6 @@ export class CarritoService {
 
     const comprandoPropio = this.cartItems.value.some(item => item.producto && item.producto.usuario && item.producto.usuario.id === usuario.id);
     if (comprandoPropio) {
-        alert('No puedes adquirir tus propios productos');
         throw new Error("Compra de producto propio no permitida");
     }
 

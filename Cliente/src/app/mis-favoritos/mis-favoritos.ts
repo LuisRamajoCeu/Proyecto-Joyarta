@@ -40,4 +40,10 @@ export class MisFavoritos implements OnInit {
       this.cargando = false;
     }
   }
+
+  onFavoritoCambiado(esFavorito: boolean, idFavorito: number) {
+    if (!esFavorito) {
+      this.favoritos = this.favoritos.filter(f => f.id !== idFavorito);
+    }
+  }
 }

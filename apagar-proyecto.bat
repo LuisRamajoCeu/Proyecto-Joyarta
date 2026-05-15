@@ -14,9 +14,8 @@ echo ===========================================================
 :: ============================================================
 echo.
 echo   [1/3]  Deteniendo Frontend (Angular)...
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":4200 .*LISTENING"') do (
-    taskkill /PID %%a /F >nul 2>&1
-)
+powershell -Command "try { $pids = (Get-NetTCPConnection -LocalPort 4200 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess); if ($pids) { Stop-Process -Id $pids -Force -ErrorAction SilentlyContinue } } catch {}"
+taskkill /FI "WINDOWTITLE eq Joyarta - Frontend*" /T /F >nul 2>&1
 echo   [OK] Frontend detenido.
 
 :: ============================================================
@@ -24,11 +23,8 @@ echo   [OK] Frontend detenido.
 :: ============================================================
 echo.
 echo   [2/3]  Deteniendo Backend (Spring Boot)...
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080 .*LISTENING"') do (
-    taskkill /PID %%a /F >nul 2>&1
-)
-:: Cerrar ventanas de cmd del backend
-taskkill /FI "WINDOWTITLE eq Joyarta - Backend*" /F >nul 2>&1
+powershell -Command "try { $pids = (Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess); if ($pids) { Stop-Process -Id $pids -Force -ErrorAction SilentlyContinue } } catch {}"
+taskkill /FI "WINDOWTITLE eq Joyarta - Backend*" /T /F >nul 2>&1
 echo   [OK] Backend detenido.
 
 :: ============================================================
@@ -58,3 +54,4 @@ echo.
 echo   Pulsa cualquier tecla para cerrar esta ventana.
 echo ===========================================================
 pause >nul
+

@@ -8,7 +8,10 @@ import { Home } from './home/home';
 import { Registro } from './registro/registro';
 import { MisFavoritos } from './mis-favoritos/mis-favoritos';
 import { Carrito } from './carrito/carrito';
-import { PerfilComponent } from './perfil/perfil.component';
+import { PerfilComponent } from './perfil/perfil';
+import { NotFound } from './not-found/not-found';
+import { Solicitudes } from './solicitudes/solicitudes';
+import { DetalleSolicitud } from './detalle-solicitud/detalle-solicitud';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -21,5 +24,7 @@ export const routes: Routes = [
     { path: 'favoritos', component: MisFavoritos },
     { path: 'carrito', component: Carrito },
     { path: 'perfil', component: PerfilComponent },
-    { path: '**', redirectTo: '/home' }
+    { path: 'solicitudes', component: Solicitudes },
+    { path: 'solicitudes/:id', component: DetalleSolicitud },
+    { path: '**', component: NotFound }
 ];

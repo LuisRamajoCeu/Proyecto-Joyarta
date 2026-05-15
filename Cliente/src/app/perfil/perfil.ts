@@ -12,8 +12,8 @@ import { lastValueFrom } from 'rxjs';
   selector: 'app-perfil',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './perfil.component.html',
-  styleUrl: './perfil.component.css'
+  templateUrl: './perfil.html',
+  styleUrl: './perfil.css'
 })
 export class PerfilComponent implements OnInit {
   usuario: any;
@@ -36,8 +36,6 @@ export class PerfilComponent implements OnInit {
   guardandoPass = false;
   mensajeExitoPass = '';
   mensajeErrorPass = '';
-
-  // ---- Subir Producto ----
   mostrarModalProducto = false;
   categorias: Categoria[] = [];
   nuevoProducto = {
@@ -52,11 +50,29 @@ export class PerfilComponent implements OnInit {
   mensajeExitoProducto = '';
   mensajeErrorProducto = '';
 
+  mostrarModalEditar = false;
+  editProducto = {
+    id: null as number | null,
+    nombre: '',
+    descripcion: '',
+    precio: null as number | null,
+    stock: null as number | null,
+    imagenUrl: '',
+    categoriaId: null as number | null
+  };
+  guardandoEdicion = false;
+  mensajeExitoEditar = '';
+  mensajeErrorEditar = '';
+
+  mostrarModalEliminar = false;
+  productoAEliminar: any = null;
+  eliminando = false;
+
   constructor(
     private usuarioService: UsuarioService,
     private tiendaService: TiendaService,
     private router: Router
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.usuario = this.usuarioService.getUsuario();
@@ -128,7 +144,7 @@ export class PerfilComponent implements OnInit {
         this.usuarioService.editarPerfil(this.usuario.id, perfilActualizado)
       );
       this.mensajeExito = '¡Perfil actualizado correctamente!';
-      
+
       this.usuario.nombre = this.editNombre;
       this.usuario.perfil = this.perfil;
       this.usuarioService.setUsuario(this.usuario);
@@ -213,8 +229,6 @@ export class PerfilComponent implements OnInit {
     this.editAvatarUrl = '';
   }
 
-  // ---- Métodos para subir producto ----
-
   abrirModalProducto() {
     this.nuevoProducto = {
       nombre: '',
@@ -277,6 +291,95 @@ export class PerfilComponent implements OnInit {
       this.mensajeErrorProducto = 'Error al subir el producto. Inténtalo de nuevo.';
     } finally {
       this.guardandoProducto = false;
+    }
+  }
+
+  abrirModalEditar(prod: any) {
+    this.editProducto = {
+      id: prod.id,
+      nombre: prod.nombre || '',
+      descripcion: prod.descripcion || '',
+      precio: prod.precio,
+      stock: prod.stock,
+      imagenUrl: prod.imagenUrl || '',
+      categoriaId: prod.categoria?.id || null
+    };
+    this.mensajeExitoEditar = '';
+    this.mensajeErrorEditar = '';
+    this.mostrarModalEditar = true;
+  }
+
+  cerrarModalEditar() {
+    this.mostrarModalEditar = false;
+  }
+
+  onEditProductoImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.editProducto.imagenUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async guardarEdicion() {
+    this.mensajeExitoEditar = '';
+    this.mensajeErrorEditar = '';
+
+    if (!this.editProducto.nombre || !this.editProducto.precio) {
+      this.mensajeErrorEditar = 'El nombre y el precio son obligatorios.';
+      return;
+    }
+
+    this.guardandoEdicion = true;
+
+    const payload: any = {
+      nombre: this.editProducto.nombre,
+      descripcion: this.editProducto.descripcion,
+      precio: this.editProducto.precio,
+      stock: this.editProducto.stock,
+      imagenUrl: this.editProducto.imagenUrl,
+      usuario: { id: this.usuario.id },
+      categoria: this.editProducto.categoriaId ? { id: this.editProducto.categoriaId } : null
+    };
+
+    try {
+      await lastValueFrom(this.tiendaService.editarProducto(this.editProducto.id!, payload));
+      this.mensajeExitoEditar = '¡Producto actualizado correctamente!';
+      await this.loadProductos();
+      setTimeout(() => this.cerrarModalEditar(), 1500);
+    } catch (err) {
+      console.error('Error al editar producto', err);
+      this.mensajeErrorEditar = 'Error al guardar los cambios.';
+    } finally {
+      this.guardandoEdicion = false;
+    }
+  }
+
+  confirmarEliminar(prod: any) {
+    this.productoAEliminar = prod;
+    this.mostrarModalEliminar = true;
+  }
+
+  cerrarModalEliminar() {
+    this.mostrarModalEliminar = false;
+    this.productoAEliminar = null;
+  }
+
+  async eliminarProducto() {
+    if (!this.productoAEliminar) return;
+
+    this.eliminando = true;
+    try {
+      await lastValueFrom(this.tiendaService.eliminarProducto(this.productoAEliminar.id));
+      await this.loadProductos();
+      this.cerrarModalEliminar();
+    } catch (err) {
+      console.error('Error al eliminar producto', err);
+    } finally {
+      this.eliminando = false;
     }
   }
 }

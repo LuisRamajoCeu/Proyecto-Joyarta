@@ -1,5 +1,7 @@
 package com.example.joyarta.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,5 +9,5 @@ import com.example.joyarta.model.Pedido;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long>{
-    java.util.List<Pedido> findByUsuarioId(Long usuarioId);
+    List<Pedido> findByUsuarioId(Long usuarioId);
 }

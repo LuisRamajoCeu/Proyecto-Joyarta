@@ -7,7 +7,7 @@ import { Conversacion } from '../models/conversacionModel';
 import { Mensaje as MensajeModel } from '../models/mensajeModel';
 import { lastValueFrom } from 'rxjs';
 import { Mensaje } from '../mensaje/mensaje';
-import { ConversacionItem } from '../conversacion-item/conversacion-item.component';
+import { ConversacionItem } from '../conversacion-item/conversacion-item';
 import { CarritoService } from '../services/carrito-service';
 import { ProductoModel } from '../models/productoModel';
 

@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ProductoModel } from '../models/productoModel';
-import { Categoria } from '../models/productoModel';
+import { ProductoModel, Categoria } from '../models/productoModel';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,9 +10,6 @@ export class TiendaService {
   private apiUrl = 'http://localhost:8080/api/tienda';
   constructor(private http: HttpClient) { }
   getProductos(): Observable<ProductoModel[]> {
-    return this.http.get<ProductoModel[]>(`${this.apiUrl}/productos`);
-  }
-  getNovedades(): Observable<ProductoModel[]> {
     return this.http.get<ProductoModel[]>(`${this.apiUrl}/productos`);
   }
   getProductoById(id: number): Observable<ProductoModel> {
@@ -35,5 +31,13 @@ export class TiendaService {
     if (precioMax !== undefined && precioMax !== null) params = params.set('precioMax', precioMax.toString());
     
     return this.http.get<ProductoModel[]>(`${this.apiUrl}/productos`, { params });
+  }
+
+  editarProducto(id: number, producto: any): Observable<ProductoModel> {
+    return this.http.put<ProductoModel>(`${this.apiUrl}/productos/${id}`, producto);
+  }
+
+  eliminarProducto(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/productos/${id}`);
   }
 }

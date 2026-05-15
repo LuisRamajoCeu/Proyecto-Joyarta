@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProductoModel } from '../models/productoModel';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -15,6 +15,7 @@ import { lastValueFrom } from 'rxjs';
 export class Producto implements OnInit {
   @Input() producto!: ProductoModel;
   esFavorito = false;
+  @Output() favoritoCambiado = new EventEmitter<boolean>();
 
   constructor(
     private favoritoService: FavoritoService,
@@ -53,10 +54,12 @@ export class Producto implements OnInit {
         await lastValueFrom(this.favoritoService.quitarFavorito(usuario.id, this.producto.id));
         this.esFavorito = false;
         console.log('Producto quitado de favoritos');
+        this.favoritoCambiado.emit(false);
       } else {
         await lastValueFrom(this.favoritoService.agregarFavorito(usuario.id, this.producto.id));
         this.esFavorito = true;
         console.log('Producto agregado a favoritos');
+        this.favoritoCambiado.emit(true);
       }
     } catch (err) {
       console.error('Error al actualizar favorito:', err);

@@ -1,0 +1,123 @@
+<div class="solicitudes-container">
+
+  <div class="solicitudes-header">
+    <div>
+      @if (esCliente()) {
+        <h2>Mis Solicitudes</h2>
+        <p class="header-subtitle">Gestiona tus encargos personalizados</p>
+      } @else {
+        <h2>Solicitudes Disponibles</h2>
+        <p class="header-subtitle">Encargos de clientes que buscan artesanos</p>
+      }
+    </div>
+    @if (esCliente()) {
+    <button class="btn-crear" (click)="abrirModalCrear()">
+      <span>✨</span> Nueva Solicitud
+    </button>
+    }
+  </div>
+
+  @if (cargando) {
+  <div class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Cargando solicitudes...</p>
+  </div>
+  } @else if (solicitudes.length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h3>No hay solicitudes aún</h3>
+    <p>Sé el primero en solicitar un diseño personalizado</p>
+  </div>
+  } @else {
+  <div class="solicitudes-grid">
+    @for (sol of solicitudes; track sol.id) {
+    <a class="solicitud-card" [routerLink]="['/solicitudes', sol.id]">
+      @if (sol.imagenUrl) {
+      <div class="card-img">
+        <img [src]="sol.imagenUrl" [alt]="sol.titulo">
+      </div>
+      } @else {
+      <div class="card-img card-img-placeholder">
+        <span>💎</span>
+      </div>
+      }
+      <div class="card-body">
+        <div class="card-top">
+          <span class="estado-badge {{ sol.estado?.toLowerCase() }}">
+            {{ getEstadoEmoji(sol.estado || '') }} {{ getEstadoLabel(sol.estado || '') }}
+          </span>
+        </div>
+        <h3>{{ sol.titulo }}</h3>
+        <p class="card-desc">{{ sol.descripcion }}</p>
+        <div class="card-footer">
+          @if (sol.presupuestoEstimado) {
+          <span class="presupuesto">~{{ sol.presupuestoEstimado }}€</span>
+          }
+          <span class="card-autor">{{ sol.cliente?.perfil?.nombre || sol.cliente?.email }}</span>
+        </div>
+      </div>
+    </a>
+    }
+  </div>
+  }
+</div>
+
+@if (mostrarModalCrear) {
+<div class="modal-overlay" (click)="cerrarModalCrear()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>✨ Nueva Solicitud de Diseño</h3>
+      <button class="modal-close" (click)="cerrarModalCrear()">✕</button>
+    </div>
+
+    @if (mensajeExito) {
+    <div class="msg-exito"><span>✅</span> {{ mensajeExito }}</div>
+    }
+    @if (mensajeError) {
+    <div class="msg-error"><span>❌</span> {{ mensajeError }}</div>
+    }
+
+    <form (ngSubmit)="crearSolicitud()" class="modal-form">
+      <div class="form-group">
+        <label for="solTitulo">Título *</label>
+        <input type="text" id="solTitulo" [(ngModel)]="nuevaSolicitud.titulo" name="solTitulo"
+          placeholder="Ej: Anillo de compromiso personalizado">
+      </div>
+
+      <div class="form-group">
+        <label for="solDescripcion">Descripción</label>
+        <textarea id="solDescripcion" [(ngModel)]="nuevaSolicitud.descripcion" name="solDescripcion" rows="4"
+          placeholder="Describe el diseño que tienes en mente, materiales preferidos, talla..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="solPresupuesto">Presupuesto estimado (€)</label>
+        <input type="number" id="solPresupuesto" [(ngModel)]="nuevaSolicitud.presupuestoEstimado" name="solPresupuesto"
+          min="0" step="0.01" placeholder="Ej: 100">
+      </div>
+
+      <div class="form-group">
+        <label>Imagen de referencia</label>
+        <div class="file-upload-container">
+          <input type="file" id="solImagen" (change)="onImagenSelected($event)" accept="image/*" class="file-input">
+          <label for="solImagen" class="btn-upload">📷 Subir Imagen</label>
+        </div>
+      </div>
+
+      @if (nuevaSolicitud.imagenUrl) {
+      <div class="img-preview">
+        <img [src]="nuevaSolicitud.imagenUrl" alt="Preview">
+      </div>
+      }
+
+      <button type="submit" class="btn-submit-modal" [disabled]="creando">
+        @if (creando) {
+        <span class="spinner"></span> Creando...
+        } @else {
+        Publicar Solicitud
+        }
+      </button>
+    </form>
+  </div>
+</div>
+}

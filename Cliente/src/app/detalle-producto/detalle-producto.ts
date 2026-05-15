@@ -1,5 +1,5 @@
 import { CommonModule, AsyncPipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ProductoModel } from '../models/productoModel';
 import { Router } from '@angular/router';
 import { TiendaService } from '../services/tienda-service';
@@ -16,7 +16,7 @@ import { CarritoService } from '../services/carrito-service';
   templateUrl: './detalle-producto.html',
   styleUrl: './detalle-producto.css',
 })
-export class DetalleProducto implements OnInit {
+export class DetalleProducto {
   producto$!: Observable<ProductoModel>;
   esFavorito = false;
   
@@ -38,8 +38,7 @@ export class DetalleProducto implements OnInit {
     private carritoService: CarritoService
   ) {}
 
-  ngOnInit() {
-  }
+
 
   async verificarFavorito() {
     const usuario = this.usuarioService.getUsuario();

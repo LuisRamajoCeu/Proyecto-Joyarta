@@ -17,7 +17,7 @@ export class Home {
   novedades$: Observable<ProductoModel[]>;
   
   constructor(private tiendaService: TiendaService) {
-    this.novedades$ = this.tiendaService.getNovedades().pipe(
+    this.novedades$ = this.tiendaService.getProductos().pipe(
       map(productos => productos
         .sort((a, b) => b.id - a.id)
         .slice(0, 9)

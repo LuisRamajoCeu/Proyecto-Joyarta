@@ -1,10 +1,39 @@
 <div class="auth-container">
 
   @if (!mostrarExito) {
+
+  @if (!rolSeleccionado) {
   <div class="auth-card">
     <div class="auth-header">
+      <h2>¿Cómo quieres usar Joyarta?</h2>
+      <p>Selecciona tu tipo de cuenta</p>
+    </div>
+
+    <div class="rol-selector">
+      <div class="rol-card" (click)="seleccionarRol('CLIENTE')" [class.selected]="nuevoUsuario.rol === 'CLIENTE'">
+        <span class="rol-emoji">🛍️</span>
+        <h3>Cliente</h3>
+        <p>Compra joyas únicas y solicita diseños personalizados a nuestros artesanos.</p>
+      </div>
+      <div class="rol-card" (click)="seleccionarRol('ARTESANO')" [class.selected]="nuevoUsuario.rol === 'ARTESANO'">
+        <span class="rol-emoji">🎨</span>
+        <h3>Artesano</h3>
+        <p>Vende tus creaciones y responde a solicitudes de diseño personalizado.</p>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia Sesión</a></p>
+    </div>
+  </div>
+  }
+
+  @if (rolSeleccionado) {
+  <div class="auth-card">
+    <div class="auth-header">
+      <button class="btn-volver" (click)="volverSeleccionRol()">← Cambiar rol</button>
       <h2>Crear Cuenta</h2>
-      <p>Únete a la comunidad de Joyarta</p>
+      <p>Registro como <strong>{{ nuevoUsuario.rol === 'CLIENTE' ? '🛍️ Cliente' : '🎨 Artesano' }}</strong></p>
     </div>
 
     <form (ngSubmit)="onRegistro()" class="auth-form" #registroForm="ngForm">
@@ -51,6 +80,8 @@
       <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia Sesión</a></p>
     </div>
   </div>
+  }
+
   }
 
   @if (mostrarExito) {
