@@ -11,8 +11,11 @@
   <div class="solicitud-detalle">
     <div class="detalle-main">
       @if (solicitud.imagenUrl) {
-      <div class="detalle-img">
+      <div class="detalle-img" (click)="abrirImagen(solicitud.imagenUrl!)">
         <img [src]="solicitud.imagenUrl" [alt]="solicitud.titulo">
+        <div class="detalle-img-overlay">
+          <span class="zoom-icon">🔍 Ampliar imagen</span>
+        </div>
       </div>
       }
 
@@ -140,3 +143,10 @@
 
   }
 </div>
+
+@if (imagenAmpliada) {
+<div class="lightbox-overlay" (click)="cerrarImagen()">
+  <button class="lightbox-close">✕</button>
+  <img [src]="imagenAmpliada" alt="Imagen ampliada" class="lightbox-img" (click)="$event.stopPropagation()">
+</div>
+}

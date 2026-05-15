@@ -18,6 +18,7 @@ export class DetalleSolicitud implements OnInit {
   solicitud: Solicitud | null = null;
   propuestas: Propuesta[] = [];
   cargando = true;
+  imagenAmpliada: string | null = null;
 
   nuevaPropuesta = {
     presupuesto: null as number | null,
@@ -135,5 +136,13 @@ export class DetalleSolicitud implements OnInit {
       case 'RECHAZADA': return '❌ Rechazada';
       default: return estado;
     }
+  }
+
+  abrirImagen(url: string) {
+    this.imagenAmpliada = url;
+  }
+
+  cerrarImagen() {
+    this.imagenAmpliada = null;
   }
 }
